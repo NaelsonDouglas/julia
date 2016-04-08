@@ -166,15 +166,7 @@ end
 
 ## Permute array dims ##
 
-function permutedims(B::AbstractArray, perm)
-    dimsB = size(B)
-    ndimsB = length(dimsB)
-    (ndimsB == length(perm) && isperm(perm)) || throw(ArgumentError("no valid permutation of dimensions"))
-    dimsP = ntuple(i->dimsB[perm[i]], ndimsB)::typeof(dimsB)
-    P = similar(B, dimsP)
-    permutedims!(P, B, perm)
-end
-
+permutedims(B::AbstractArray, perm) = permutedims(convert(Array, B), perm)
 
 ## ipermutedims in terms of permutedims ##
 
