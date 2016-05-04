@@ -121,6 +121,24 @@ lpad(s, n::Integer, p=" ") = lpad(string(s),n,string(p))
 rpad(s, n::Integer, p=" ") = rpad(string(s),n,string(p))
 cpad(s, n::Integer, p=" ") = rpad(lpad(s,div(n+strwidth(s),2),p),n,p)
 
+function split{T<:AbstractString}(str::T, n::Integer)
+    if (n <= 0)
+        error("The parameter n sould be a positive number")
+    elseif (length(str) < n)
+        error("Can't split using a number bigger than the string length.")
+    end
+    parts = ASCIIString[]
+    n = div(length(str),n)
+    last_index = length(str)-length(str)%n #The index of the last "divisible" part in the string split("abc",2) --> b is the last divisible and c is the remainder
+    int_domain = str[1:last_index] #the divisible substring split("abc",2) ->int_domain == "ab", remainder="c"
+    remainder = str[length(int_domain)+1:length(str)]
+
+    for first=1:n:length(int_domain)
+        push!(parts,int_domain[first:first+n-1])
+    end  
+    parts[end] = parts[end]*remainder
+    return parts
+end
 # splitter can be a Char, Vector{Char}, AbstractString, Regex, ...
 # any splitter that provides search(s::AbstractString, splitter)
 split{T<:SubString}(str::T, splitter; limit::Integer=0, keep::Bool=true) = _split(str, splitter, limit, keep, T[])
